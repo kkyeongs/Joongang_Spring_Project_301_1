@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ReservationDao">
+	<select id="ksListReservationDataSelect" resultType="Reservation" parameterType="Reservation">
+		SELECT r.resnum, r.resdate, r.restime, r.id, m.name, a.name empname, a.empno
+		FROM reservation r, 
+		member m, 
+    		(SELECT m.name, e.empno 
+    		FROM emp e, member m 
+    		WHERE e.id=m.id) a 
+		WHERE r.id=m.id and a.empno=r.empno and resdate <![CDATA[ >= ]]> #{firstYMD} and resdate <![CDATA[ <= ]]> #{secondYMD}
+		ORDER BY r.resdate, r.restime
+	</select>
+	
+	<insert id="ksReservationFormInsert" parameterType="Reservation">
+		INSERT INTO reservation(resnum, empno, id, resdate, restime, rescontent) VALUES(reserv_seq.nextval, #{empno}, #{id}, #{resdate}, #{restime}, #{rescontent})
+	</insert>
+	
+	<select id="ksUpdateReservationSelect" parameterType="int" resultType="Reservation">
+		SELECT r.*, m.name FROM reservation r, member m WHERE resnum = #{resnum} and r.id=m.id
+	</select>
+	
+	<update id="ksReservationUpdate" parameterType="Reservation">
+		UPDATE reservation SET empno=(SELECT e.empno FROM member m, emp e WHERE m.name=#{empname} and e.id=m.id), resdate=#{resdate}, restime=#{restime}, rescontent=#{rescontent} WHERE resnum=#{resnum}
+	</update>
+	
+	<select id="ksGetEmpName" resultType="Reservation">
+		SELECT m.name, e.empno FROM member m, emp e WHERE m.id=e.id and e.dept='의료진'
+	</select>
+	
+	<delete id="deleteDoReservation" parameterType="int">
+		DELETE FROM reservation WHERE resnum=#{resnum}
+	</delete>
+</mapper>	
+
+
+
+

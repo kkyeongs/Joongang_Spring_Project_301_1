@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MemberManagement">
+	<select id="HjMemberManagementCnt" resultType="int">
+		select count(*) FROM member where state = 1
+	</select>
+	<select id="HGmemberManagementCntById" parameterType="MemberManagement" resultType="int">
+		select count(*) from member where state = 1 and id = #{search}
+	</select>
+	<select id="HGmemberManagementCntByEmail" parameterType="MemberManagement" resultType="int">
+		select count(*) from member where state = 1 and email = #{search}
+	</select>
+	<select id="HGmemberManagementCntByName" parameterType="MemberManagement" resultType="int">
+		select count(*) from member where state = 1 and name = #{search}
+	</select>
+	<select id="HGmemberManagementCntByPhone" parameterType="MemberManagement" resultType="int">
+		select count(*) from member where state = 1 and phone = #{search}
+	</select>
+	<select id="HjMemberManagementList" parameterType="MemberManagement" resultType="MemberManagement">
+		select * 
+		from
+			 ( 
+  			 select rownum rn, a.* from
+    		 (select * from member where state=1 order by id) a <!-- a는 서브쿼리를 뜻함 -->
+    		 )
+		where rn between #{start} and #{end}
+	</select>
+	
+	<select id="HGmemberManagementListById" parameterType="MemberManagement" resultType="MemberManagement">
+		select * 
+		from
+			 ( 
+  			 select rownum rn, a.* from
+    		 (select * from member where state=1 and id=#{search} order by id) a <!-- a는 서브쿼리를 뜻함 -->
+    		 )
+		where rn between #{start} and #{end}
+	</select>
+	<select id="HGmemberManagementListByEmail" parameterType="MemberManagement" resultType="MemberManagement">
+		select * 
+		from
+			 ( 
+  			 select rownum rn, a.* from
+    		 (select * from member where state=1 and email=#{search} order by id) a <!-- a는 서브쿼리를 뜻함 -->
+    		 )
+		where rn between #{start} and #{end}
+	</select>
+	<select id="HGmemberManagementListByName" parameterType="MemberManagement" resultType="MemberManagement">
+		select * 
+		from
+			 ( 
+  			 select rownum rn, a.* from
+    		 (select * from member where state=1 and name=#{search} order by id) a <!-- a는 서브쿼리를 뜻함 -->
+    		 )
+		where rn between #{start} and #{end}
+	</select>
+	<select id="HGmemberManagementListByPhone" parameterType="MemberManagement" resultType="MemberManagement">
+		select * 
+		from
+			 ( 
+  			 select rownum rn, a.* from
+    		 (select * from member where state=1 and phone=#{search} order by id) a <!-- a는 서브쿼리를 뜻함 -->
+    		 )
+		where rn between #{start} and #{end}
+	</select>
+	<update id="MemberManagementDelete" parameterType="String">
+		update member set state = 3 where id = #{id} 
+	</update>
+</mapper>

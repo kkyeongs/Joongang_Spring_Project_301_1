@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="Pconsult" type="com.han.S20210901.model.Pconsult"/>
+		<typeAlias alias="Replys"   type="com.han.S20210901.model.Replys"/>
+		<typeAlias alias="Member" type="com.han.S20210901.model.Member"/>
+		<typeAlias alias="Clinic" type="com.han.S20210901.model.Clinic"/>
+		<typeAlias alias="Oconsult"   type="com.han.S20210901.model.Oconsult"/>
+		<typeAlias alias="PunchHg" type="com.han.S20210901.model.PunchHg"/>
+		<typeAlias alias="Faq"   type="com.han.S20210901.model.Faq"/>
+		<typeAlias alias="Notice"   type="com.han.S20210901.model.Notice"/>
+		<typeAlias alias="Media"   type="com.han.S20210901.model.Media"/>
+		<typeAlias alias="MemberManagement"   	type="com.han.S20210901.model.MemberManagement"/>
+		<typeAlias alias="EmpManagement"   	type="com.han.S20210901.model.EmpManagement"/>
+		<typeAlias alias="Reservation" type="com.han.S20210901.model.Reservation"/>
+		<typeAlias alias="Emp" type="com.han.S20210901.model.Emp"/>
+		<typeAlias alias="Review" type="com.han.S20210901.model.Review"/>
+	</typeAliases> 
+</configuration>

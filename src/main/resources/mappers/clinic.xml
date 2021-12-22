@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Clinic">
+	<select id="HGclinicSelect" parameterType="int" resultType="Clinic">
+		select * from Clinic where cnum = #{cnum}
+	</select>
+	<select id="HGclinicTotCnt" resultType="int">
+		select count(*) from clinic
+	</select>
+	<select id="HGclinicClientNameTotCnt" parameterType="String" resultType="int">
+	
+	select count(*)
+	from
+		(
+		
+			select cnum, max(name) name, ccontent,cdate, empno, max(ename) ename
+			from(
+				select c.cnum, m.name name, c.ccontent, c.cdate, c.empno, '' ename
+				from clinic c, emp e, member m
+				where e.empno = c.empno and c.id = m.id
+				
+				UNION
+				
+				select c.cnum, '' name, c.ccontent, c.cdate, c.empno, m2.name ename
+				from clinic c, emp e, member m2
+				where e.empno = c.empno
+				and e.id = m2.id
+			)
+			where name = #{clientName}
+			group by cnum, ccontent, cdate, empno
+		
+		)  
+	</select>
+	<select id="HGclinicDoctorNameTotCnt" parameterType="String" resultType="int">
+	select count(*)
+	from
+		(
+		
+			select cnum, max(name) name, ccontent,cdate, empno, max(ename) ename
+			from(
+				select c.cnum, m.name name, c.ccontent, c.cdate, c.empno, '' ename
+				from clinic c, emp e, member m
+				where e.empno = c.empno and c.id = m.id
+				
+				UNION
+				
+				select c.cnum, '' name, c.ccontent, c.cdate, c.empno, m2.name ename
+				from clinic c, emp e, member m2
+				where e.empno = c.empno
+				and e.id = m2.id
+			)
+			where ename = #{doctorName}
+			group by cnum, ccontent, cdate, empno
+		
+		)  
+	</select>
+	<select id="HGclinicDateTotCnt" parameterType="String" resultType="int">
+		select count(* ) from clinic where to_char(cdate, 'YYYY-MM-DD') = #{search}
+	</select>
+	
+	<select id="HGclinicList" parameterType="Clinic" resultType="Clinic">
+		SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	select * 
+    				from
+    		 			(
+    		 			SELECT cnum, MAX(name3) name, CCONTENT, CDATE, empno  , MAX(name) ename
+						FROM (
+							select c.cnum, m.NAME name , c.CCONTENT, c.CDATE, c.empno , '' name3
+							from clinic c, emp e, member m
+							where e.empno = c.empno
+							and e.id = m.id
+							union
+							select c.cnum,'' name , c.CCONTENT, c.CDATE, c.empno , m2.name name3
+							from clinic c, emp e, member m2
+							where e.empno = c.empno
+							and m2.id = c.id
+						)
+					GROUP BY cnum, CCONTENT, CDATE, empno
+    		 		) 
+    		 		order by cnum desc) a 
+    		 )
+		WHERE rn between #{start} and #{end}
+	</select>
+	<select id="HGdoctorNameClinicList" parameterType="Clinic" resultType="Clinic">
+	SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	
+    			 select *
+				from
+					(select count(name),cnum, max(name) name, ccontent,cdate, empno, max(ename) ename
+					from(
+							select c.cnum, m.name name, c.ccontent, c.cdate, c.empno, '' ename
+							from clinic c, emp e, member m
+							where e.empno = c.empno and c.id = m.id
+							
+							UNION
+							
+							select c.cnum, '' name, c.ccontent, c.cdate, c.empno, m2.name ename
+							from clinic c, emp e, member m2
+							where e.empno = c.empno
+							and e.id = m2.id
+					)
+			
+				group by cnum, ccontent, cdate, empno
+				order by cdate desc
+				)
+				where ename =#{doctorName} ) a
+				)
+				WHERE rn between #{start} and #{end}
+	</select>
+	<select id="HGclientNameClinicList" parameterType="Clinic" resultType="Clinic">
+		SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	
+    			 select *
+				from
+					(select count(name),cnum, max(name) name, ccontent,cdate, empno, max(ename) ename
+					from(
+							select c.cnum, m.name name, c.ccontent, c.cdate, c.empno, '' ename
+							from clinic c, emp e, member m
+							where e.empno = c.empno and c.id = m.id
+							
+							UNION
+							
+							select c.cnum, '' name, c.ccontent, c.cdate, c.empno, m2.name ename
+							from clinic c, emp e, member m2
+							where e.empno = c.empno
+							and e.id = m2.id
+					)
+			
+				group by cnum, ccontent, cdate, empno
+				order by cdate desc
+				)
+				where name =#{clientName} ) a
+				)
+				WHERE rn between #{start} and #{end}
+	</select>
+	<select id="HGdateClinicList" parameterType="Clinic" resultType="Clinic">
+	SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	
+    			 select *
+				from
+					(select count(name),cnum, max(name) name, ccontent,cdate, empno, max(ename) ename
+					from(
+							select c.cnum, m.name name, c.ccontent, c.cdate, c.empno, '' ename
+							from clinic c, emp e, member m
+							where e.empno = c.empno and c.id = m.id
+							
+							UNION
+							
+							select c.cnum, '' name, c.ccontent, c.cdate, c.empno, m2.name ename
+							from clinic c, emp e, member m2
+							where e.empno = c.empno
+							and e.id = m2.id
+					)
+			
+				group by cnum, ccontent, cdate, empno
+				order by cdate desc
+				)
+				where to_char(cdate,'YYYY-MM-DD') = #{searchDate} ) a
+				)
+				WHERE rn between #{start} and #{end}
+	</select>
+	<insert id="HGclinicInsert" parameterType="Clinic" >
+		insert into clinic values (clinic_seq.nextval, #{empno},#{id},sysdate,#{ctime},#{ccontent})
+	</insert>
+	<update id="HGclinicUpdate" parameterType="Clinic">
+		update clinic set cdate = sysdate, ccontent = #{ccontent} where cnum = #{cnum}
+	</update>
+	<delete id="HGclinicDelete" parameterType="int">
+		delete from clinic where cnum = #{cnum}
+	</delete>
+</mapper>

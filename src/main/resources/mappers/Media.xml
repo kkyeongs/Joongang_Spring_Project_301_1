@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MediaSh">
+
+	<select id="mTotalSh" resultType="int">
+		select count(*) from media
+	</select>
+	
+	<select id="mediaListSh" parameterType="Media" resultType="Media">
+		select * 
+		from (select rownum rn, a.* 
+		from (select * from media order by mnum desc) a)
+		where rn BETWEEN #{start} and #{end}
+	</select>
+	
+	<update id="mediaCountSh" parameterType="int">
+		update media set mcount = mcount + 1 where mnum=#{mnum}
+	</update>
+	
+	<select id="mediaDetailSh" parameterType="int" resultType="Media">
+		select * from media where mnum=#{mnum}
+	</select>
+	
+	<insert id="mediaInsertProSh" parameterType="Media">
+		insert into media values(MEDIA_SEQ.nextval,0,#{mtitle},#{link},sysdate,'')
+	</insert>
+	
+	<delete id="mediaDeleteProSh" parameterType="int">
+		delete from media where mnum=#{mnum}
+	</delete>
+	
+	<update id="mediaUpdateProSh" parameterType="Media">
+		update media set mtitle = #{mtitle}, link = #{link} where mnum=#{mnum}
+	</update>
+	
+	<select id="mediaListMainSh" parameterType="Media" resultType="Media">
+		select * 
+		from (select rownum rn, a.* 
+		from (select * from media order by mnum desc) a)
+		where rn BETWEEN 1 and 10
+	</select>
+
+</mapper>

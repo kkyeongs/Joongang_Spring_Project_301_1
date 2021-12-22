@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Punch">
+	<insert id="hgPunchOn" parameterType="String">
+		insert into punch (empno, pundate, starttime) values ((select empno from emp where id = #{sessionId}), sysdate,to_char(systimestamp,'hh24:mi'))
+	</insert>
+	<insert id="hgPunchOff" parameterType="String">
+		insert into punch (empno, pundate, endtime) values ((select empno from emp where id = #{sessionId}), sysdate,to_char(systimestamp,'hh24:mi'))
+	</insert>
+	<select id="HGpunchTotalFull" resultType="int">
+		select count(*)
+		from(
+				select 직원번호, 날짜, max(출근시간) 출근시간, max(퇴근시간) 퇴근시간
+				from(
+						select empno 직원번호, pundate 날짜, starttime 출근시간, '' 퇴근시간 from punch
+						union
+						select empno 직원번호, pundate 날짜, '' 출근시간, endtime 퇴근시간 from punch
+					)	
+				group by 직원번호, 날짜
+			)
+	</select>
+	<select id="HGpunchListAll"  parameterType="PunchHg" resultType="PunchHg">
+	SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	select * 
+    				from
+    		 			(
+    		 			SELECT empno, pundate, max(starttime) starttime , max(endtime) endtime 
+						  FROM (
+                    select empno, to_date(to_char(pundate,'yyyy-mm-dd')) pundate , starttime , '' endtime
+                    from punch p      
+                    union
+                    select empno, to_date(to_char(pundate,'yyyy-mm-dd')) pundate , '' starttime , endtime
+                    from punch
+              )
+              GROUP BY empno, pundate
+    		 		) 
+    		 		order by pundate desc) a 
+    		 )
+		WHERE rn between #{start} and #{end} 
+	</select>
+	<select id="HgpunchTotalEmpno" parameterType="PunchHg" resultType="int">
+			select count(*)
+		from(
+				select 직원번호, 날짜, max(출근시간) 출근시간, max(퇴근시간) 퇴근시간
+				from(
+						select empno 직원번호, pundate 날짜, starttime 출근시간, '' 퇴근시간 from punch
+						union
+						select empno 직원번호, pundate 날짜, '' 출근시간, endtime 퇴근시간 from punch
+					)	
+				group by 직원번호, 날짜
+				having 직원번호 = to_number(#{search})
+			)
+	</select>
+	<select id="HGpunchListByEmpno" parameterType="PunchHg" resultType="PunchHg">
+		SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	select * 
+    				from
+    		 			(
+    		 			SELECT empno, pundate, max(starttime) starttime , max(endtime) endtime 
+						  FROM (
+                    select empno, to_date(to_char(pundate,'yyyy-mm-dd')) pundate , starttime , '' endtime
+                    from punch p      
+                    union
+                    select empno, to_date(to_char(pundate,'yyyy-mm-dd')) pundate , '' starttime , endtime
+                    from punch
+              )
+              GROUP BY empno, pundate
+              having empno = to_number(#{search})
+    		 		) 
+    		 		order by pundate desc) a 
+    		 )
+		WHERE rn between #{start} and #{end} 
+	</select>
+	<select id="HgpunchTotalDate" parameterType="PunchHg" resultType="int">
+			select count(*)
+		from(
+				select 직원번호, 날짜, max(출근시간) 출근시간, max(퇴근시간) 퇴근시간
+				from(
+						select empno 직원번호, pundate 날짜, starttime 출근시간, '' 퇴근시간 from punch
+						union
+						select empno 직원번호, pundate 날짜, '' 출근시간, endtime 퇴근시간 from punch
+					)	
+				group by 직원번호, 날짜
+				having to_date(to_char(날짜,'YYYY-MM-DD')) = to_date(#{search})
+			)
+	</select>
+	<select id="HGpunchListByDate" parameterType="PunchHg" resultType="PunchHg">
+		SELECT * 
+		FROM
+  			 ( 
+	  			 select rownum rn, a.* from
+    			 (	select * 
+    				from
+    		 			(
+    		 			SELECT empno, pundate, max(starttime) starttime , max(endtime) endtime 
+						  FROM (
+                    select empno, to_date(to_char(pundate,'yyyy-mm-dd')) pundate , starttime , '' endtime
+                    from punch p      
+                    union
+                    select empno, to_date(to_char(pundate,'yyyy-mm-dd')) pundate , '' starttime , endtime
+                    from punch
+              )
+              GROUP BY empno, pundate
+              having to_date(to_char(pundate,'YYYY-MM-DD')) = to_date(#{search})
+    		 		) 
+    		 		order by pundate desc) a 
+    		 )
+		WHERE rn between #{start} and #{end}
+	</select>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OconsultDao">
+<!-- 공개상담 :금희 -->
+<!-- 리스트 -->
+	<select id="ghOconsultTotal" resultType="int">
+		SELECT count(*) FROM oconsult
+	</select>
+	
+	<select id="ghOconsultListAll" parameterType="Oconsult" resultType="Oconsult">
+	select * 
+	from(
+			SELECT rownum rn, a2.*
+			FROM
+	 	  	(
+	 	  		Select rownum rn2, a.*
+	 	  		From	
+	 	  			(select * from oconsult order by ogroup asc, ostep desc) a
+       					order by rn2 desc
+	 	  	) a2
+      	)
+    WHERE rn between #{start} and #{end}
+    order by rn
+	</select>
+	
+<!-- 상세페이지 -->
+	<select id="ghOconsultSelOne" parameterType="int" resultType="Oconsult">
+		select * From oconsult Where onum =#{onum}
+	</select>
+	
+<!-- 수정 -->
+	<update id="ghOconsultUpdate" parameterType="Oconsult">
+		update oconsult 
+		set	   otitle =#{otitle}, owriter =#{owriter},
+			   ocontent =#{ocontent} 
+		where  onum=#{onum}  
+	</update>
+	
+<!-- 조회수 +1 -->
+	<update id="ghOconsultCount" parameterType="int">
+		update 	oconsult 
+		set 	ocount=ocount+1 
+		Where	onum = #{onum}
+	</update>
+	
+<!-- 글쓰기 -->
+	<insert id="ghOconsultInsert" parameterType="Oconsult">
+		INSERT INTO	oconsult (otitle, owriter, ocontent, onum, opw, odate, ocount, ogroup, ostep, oindent)
+		VALUES (#{otitle}, #{owriter}, #{ocontent}, oconsult_seq.nextval, #{opw}, sysdate, 0, oconsult_seq.currval, 0 ,0) 
+	</insert>
+
+<!-- 삭제 -->
+	<delete id="ghOconsultDelete" parameterType="int" >
+		DELETE FROM oconsult WHERE onum=#{onum} 
+	</delete>
+	
+<!-- 답글 - ostep + 1  -->
+	<update id="ghOconsultReplyShape" parameterType="Oconsult">
+		update oconsult set ostep = ostep+1 where ogroup= #{ogroup} and ostep > #{ostep}
+	</update>
+
+<!-- 답글 -->
+	<insert id="ghOconsultReplyPro" parameterType="Oconsult">
+		INSERT INTO	oconsult (otitle, owriter, ocontent, onum, opw, odate, ocount, ogroup, ostep, oindent)
+		VALUES (#{otitle}, #{owriter}, #{ocontent}, oconsult_seq.nextval, 1234, sysdate, 0, #{ogroup}, #{ostep}+1, #{oindent}+1) 
+	</insert>
+
+
+</mapper>

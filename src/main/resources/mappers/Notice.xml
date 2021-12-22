@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="NoticeSh">
+
+	<select id="nTotalSh" resultType="int">
+		select count(*) from notice
+	</select>
+	
+	<select id="noticeListSh" parameterType="Notice" resultType="Notice">
+		select * 
+		from (select rownum rn, a.* 
+		from (select * from notice order by nnum desc) a)
+		where rn BETWEEN #{start} and #{end}
+	</select>
+	
+	<select id="ncountUpdateSh" parameterType="int">
+		<!-- 공지사항 조회수 업데이트 -->
+		update notice set ncount=ncount+1 where nnum=#{nnum}
+	</select>
+	
+	<select id="noticeDetailSh" parameterType="int" resultType="Notice">
+		select * from notice where nnum=#{nnum}
+	</select>
+	
+	
+	<update id="noticeUpdateSh" parameterType="Notice">
+		update  notice 
+		set     ncontent=#{ncontent}, ntitle=#{ntitle}
+		where   nnum=#{nnum}
+	</update>
+	
+	<delete id="noticeDeleteSh" parameterType="int">
+		delete from notice where nnum=#{nnum}
+	</delete>
+	
+	<insert id="noticeUploadFormSh" parameterType="Notice">
+		insert into notice values (NOTICE_SEQ.nextval, sysdate, 0, #{ncontent}, #{ntitle}, #{nimg})
+	</insert>
+	
+	<select id="noticeListMainSh" parameterType="Notice" resultType="Notice">
+		select * 
+		from (select rownum rn, a.* 
+		from (select * from notice order by nnum desc) a)
+		where rn BETWEEN 1 and 6
+	</select>
+
+</mapper>

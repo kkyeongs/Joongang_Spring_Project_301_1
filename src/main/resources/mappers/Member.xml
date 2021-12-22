@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MemberDao">
+	<select id="ksGetIdPw" parameterType="String" resultType="Member">
+		SELECT id, pw, state, name FROM member WHERE id=#{id}
+	</select>
+	
+	<select id="findIdSh" parameterType="Member" resultType="java.lang.String">
+		select id from member where name=#{name} and phone=#{phone}
+	</select> 
+	
+	<select id="findPwSh" parameterType="Member" resultType="java.lang.String">
+		select pw from member where email=#{email}
+	</select>
+	
+	<update id="findPwResultSh" parameterType="Member">
+		update member set pw=#{pw} where id=#{id} and email=#{email}
+	</update>
+	
+<!-- 회원가입 ,금희-->
+	<insert id="ghMemberJoin" parameterType="Member">
+		insert into member values (#{id}, #{pw}, #{email}, #{name}, #{addr}, #{phone}, sysdate, #{state}) 
+	</insert>
+	
+<!-- 회원가입 > 아이디 중복체크, 금희(아작스) -->
+	<select id="ghMemberIdChk" parameterType="Member" resultType="int">
+		SELECT count(id) FROM member WHERE id=#{id}
+	</select>
+
+<!-- 회원정보 수정 폼, 금희 -->
+	<select id="ghMemberUpdate" parameterType="java.lang.String" resultType="Member">
+		SELECT * FROM member WHERE id=#{id}
+	</select>
+
+<!-- 회원정보 수정, 금희 -->
+	<update id="ghMemberUpdatePro" parameterType="Member" >
+		UPDATE member SET pw=#{pw}, email=#{email}, name=#{name}, addr=#{addr}, phone=#{phone} WHERE id=#{id}
+	</update>
+
+<!-- 회원탈퇴, 금희 -->
+	<update id="ghMemberDelete">
+		UPDATE member SET state =3 WHERE id=#{id}
+	</update>
+	
+<!-- 마이페이지 안의 '내 정보', 금희 -->
+	<select id="ghMemberMyInfo" parameterType="java.lang.String" resultType="Member">
+	SELECT id, pw, email, name, addr, phone  FROM member WHERE id=#{sessionId}
+	</select>
+	<select id="HGmemberSelect" parameterType="java.lang.String" resultType="Member">
+		select * from member where id = #{id}
+	</select>
+</mapper>	
+
+
+
+

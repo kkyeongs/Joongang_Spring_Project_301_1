@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="FaqSh">
+	<select id="faqListSh" resultType="Faq" parameterType="Faq">
+		select * 
+		from (select rownum rn, a.* 
+		from (select * from faq order by fnum) a)
+	</select>
+	
+	<select id="faqUpdateFormSh" parameterType="int" resultType="Faq">
+		select * from faq where fnum=#{fnum}
+	</select>
+	
+	<update id="faqUpdateProSh" parameterType="Faq">
+		update faq set ftitle=#{ftitle}, fcontent=#{fcontent} where fnum=#{fnum}
+	</update>
+	
+	<insert id="faqInsertProSh" parameterType="Faq">
+		insert into faq values(FAQ_SEQ.nextval, #{ftitle}, #{fcontent})
+	</insert>
+	
+	<delete id="faqDeleteProSh" parameterType="int">
+		delete from faq where fnum=#{fnum}
+	</delete>
+</mapper>
